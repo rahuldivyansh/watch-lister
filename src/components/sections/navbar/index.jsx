@@ -1,7 +1,6 @@
 import React from "react";
 import { useState } from "react";
 import styles from "./Navbar.module.css";
-import SearchIcon from "@heroicons/react/24/solid/MagnifyingGlassIcon.js";
 import { LOGO_TEXT } from "@/src/constants";
 import Link from "next/link";
 
@@ -33,7 +32,7 @@ export default function Navbar() {
           />
           <Link href={`/search/${searchQuery}`}>
             <button className="aspect-square">
-              <SearchIcon className="w-4 h-4" />
+              🔍
             </button>
           </Link>
         </div>
