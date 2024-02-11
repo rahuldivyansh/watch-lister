@@ -11,7 +11,7 @@ export default function Register() {
 
   const session = useSession();
   if (session.status === "authenticated") {
-    router.push("/");
+    router.push("/dashboard");
     return null;
   }
   return <RegisterPage />;
