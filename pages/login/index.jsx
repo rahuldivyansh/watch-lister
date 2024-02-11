@@ -11,7 +11,7 @@ export default function Login() {
 
   const session = useSession();
   if (session.status === "authenticated") {
-    router.push("/");
+    router.push("/dashboard");
     return null;
   }
 
