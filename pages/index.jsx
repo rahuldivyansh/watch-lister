@@ -6,7 +6,7 @@ import movieInstance from "@/src/services/movie";
 
 export default function Home({ data }) {
   return (
-    <div className="flex flex-col container mx-auto">
+    <div className="flex flex-col">
       <Navbar />
       <Main data={data} />
       <Footer />

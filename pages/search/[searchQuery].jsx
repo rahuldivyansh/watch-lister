@@ -27,7 +27,7 @@ export const getServerSideProps = async (context) => {
 
 export default function Search({ data }) {
   return (
-    <div className="flex flex-col container mx-auto">
+    <div className="flex flex-col ">
       <Navbar/>
       <Main data={data} />
       <Footer/>
