@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { redirect } from "next/navigation";
 
 export default function Dashboard() {
   const { data: session } = useSession();

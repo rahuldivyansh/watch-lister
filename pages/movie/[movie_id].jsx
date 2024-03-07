@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useMemo, useState } from "react";
 import axios from "axios";
 import movieInstance from "@/src/services/movie";
 import {
@@ -8,6 +9,11 @@ import {
 import Navbar from "@/src/components/sections/navbar";
 import Image from "next/image";
 import { imageLoader } from "@/src/utils/image";
+import { useSession } from "next-auth/react";
+import { getToken } from "next-auth/jwt";
+import WatchList from "@/src/models/watchlist";
+import useFetch from "@/src/hooks/general/useFetch";
+import { connectMongoDB } from "@/src/lib/mongodb";
 
 export const getServerSideProps = async (context) => {
   const id = context.query.movie_id;
@@ -16,9 +22,24 @@ export const getServerSideProps = async (context) => {
   try {
     const res = await movieInstance(singleMovieOptions);
     const result = await res.data;
+    const session = await getToken({
+      req: context.req,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
+    let isMovieAdded = false;
+    if (session) {
+      const email = session?.email;
+      const id = result.id;
+      await connectMongoDB();
+      const getMovieData = await WatchList.findOne({ email, movieId: id });
+      if (getMovieData) {
+        isMovieAdded = true;
+      }
+    }
     return {
       props: {
         movie: result,
+        isMovieAdded,
       },
     };
   } catch (error) {
@@ -29,9 +50,53 @@ export const getServerSideProps = async (context) => {
   }
 };
 
+
 export default function Movie(props) {
-  const { movie } = props;
-  // console.log(movie);
+  const { movie, isMovieAdded } = props;
+  const [isAdded, setIsAdded] = useState(isMovieAdded);
+
+  const { data: session } = useSession();
+  const email = useMemo(() => session?.user?.email, [session]);
+  // console.log("session", session);
+
+  const postData = useFetch({
+    method: "POST",
+    url: "/api/watchlist/postDetails",
+  });
+
+  const deleteData = useFetch({
+    method: "DELETE",
+    url: "/api/watchlist/deleteDetails",
+  });
+  
+
+  const handleAdd = async () => {
+    try {
+      const payload = movie;
+      const { data, error } = await postData.dispatch(payload);
+
+      if (!error) {
+        console.log("Successfully added to watchlist");
+        setIsAdded(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleRemove = async () => {
+    try {
+      const payload = movie.id;
+      const {data, error} = await deleteData.dispatch(payload);
+
+      if (!error) {
+        console.log("Successfully removed from watchlist");
+        setIsAdded(false);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <Navbar />
@@ -74,11 +139,17 @@ export default function Movie(props) {
                 </p>
               ))}
             </div>
+            {session && (
+              <button
+                className="mt-6 bg-red-400/40 rounded p-2 "
+                onClick={isAdded ? handleRemove : handleAdd}
+              >
+                {isAdded ? "Remove from watchlist" : "Add to watchlist"}
+              </button>
+            )}
           </div>
         </div>
       </div>
     </>
   );
 }
-
-
