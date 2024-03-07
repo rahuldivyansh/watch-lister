@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import _models from "@/src/models";
 
 export const connectMongoDB = async() => {
     try{
