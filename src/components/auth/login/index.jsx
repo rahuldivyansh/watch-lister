@@ -26,7 +26,7 @@ export default function LoginPage() {
         return;
       }
 
-      router.replace("/login");
+      router.replace("/");
     } catch (error) {
       console.log(error);
     }

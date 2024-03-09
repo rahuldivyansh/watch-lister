@@ -4,8 +4,9 @@ import React from "react";
 const WatchList = () => {
   return (
     <div>
-      <WatchListComp />
+      <WatchListComp/>
     </div>
   );
 };
+
 export default WatchList;
