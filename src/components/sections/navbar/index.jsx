@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { signOut } from "next-auth/react";
 import Dashboard from "../../dashboard";
+import Button from "../../ui/Button";
 
 export default function Navbar() {
   const session = useSession();
@@ -40,19 +41,32 @@ export default function Navbar() {
             <button className="aspect-square">🔍</button>
           </Link>
         </div>
-        {(isAuthenticated && <Link href={'/dashboard'}> <button className="p-2 bg-white hover:bg-white/95 rounded-md text-gray-800 hover:text-black"> {session?.data?.user?.name} </button> </Link>)}
-        
-        {(!isAuthenticated &&
-        <>
-          <Link href={"/login"}>
-            <button className="p-2 rounded-md hover:bg-slate-700">Login</button>
-          </Link>
-          <Link href={"/register"}>
-            <button className="p-2 bg-white hover:bg-white/95 rounded-md text-gray-800 hover:text-black">
-              Sign up
-            </button>
-          </Link>
-        </>
+        {isAuthenticated && (
+          <>
+            <Link href={"/dashboard"}>
+              {" "}
+              <Button> {session?.data?.user?.name} </Button>
+            </Link>
+            <Link href={"/watchlist"}>
+              {" "}
+              <Button> Watchlist </Button>
+            </Link>
+          </>
+        )}
+
+        {!isAuthenticated && (
+          <>
+            <Link href={"/login"}>
+              <button className="p-2 rounded-md hover:bg-slate-700">
+                Login
+              </button>
+            </Link>
+            <Link href={"/register"}>
+              <button className="p-2 bg-white hover:bg-white/95 rounded-md text-gray-800 hover:text-black">
+                Sign up
+              </button>
+            </Link>
+          </>
         )}
       </div>
     </div>

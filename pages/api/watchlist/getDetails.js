@@ -1,21 +1,16 @@
-import { MongoClient } from 'mongodb';
+import WatchList from '@/src/models/watchlist';
+import { connectMongoDB } from '@/src/lib/mongodb';
+import withAuthApi from '@/src/middleware/withAuthApi';
 
-async function getMovieDetails() {
-    const uri = 'mongodb://localhost:27017';
-    const client = new MongoClient(uri);
+async function handler(req, res) {
+    try{
+        await connectMongoDB();
+        const watchlistData = await WatchList.find({ email: req.user });
 
-    try {
-        await client.connect();
-
-        const database = client.db('test');
-        const collection = database.collection('watchlist');
-
-        const movieDetails = await collection.find().toArray();
-
-        return movieDetails;
-    } finally {
-        await client.close();
+        return res.status(200).json({message: "successfully fetching watchlist data from db",watchlistData});
+    } catch (err){
+        return res.status(503).json({ message: "Some error occured while fetching from database  ", error: err })
     }
 }
 
-export default getMovieDetails;
+export default withAuthApi(handler);
