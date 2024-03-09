@@ -40,6 +40,7 @@ export const getServerSideProps = async (context) => {
       props: {
         movie: result,
         isMovieAdded,
+        session,
       },
     };
   } catch (error) {
